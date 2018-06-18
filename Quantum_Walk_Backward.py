@@ -5,44 +5,23 @@ import numpy as np
 import cmath
 
 #define final state
-n=5 #number of steps
+n=4 #number of steps
 k=n+1 #number of sites
 
 
 initial = np.zeros((2*k,1),dtype=complex)
-initial[0][0]=initial[1][0]=1./math.sqrt(2)
-
-'''
-final = np.zeros((2*k,1),dtype=complex) #2k number of total sites (up and down)
-#final[0][0] = 1. #spin up 
-#final[1][0] = 1. #spin down
-
-u1 = np.ones((2,1),dtype=complex)/math.sqrt(4)
-u2 = np.ones((2,1),dtype=complex)/math.sqrt(4)
-
-final[0][0] = u1[0][0]
-final[2][0]= u1[1][0]
-final[2*k-3][0]= u2[0][0]
-final[2*k-1][0]= -u2[1][0]
-
-
-final = np.ones((8,1),dtype=complex)/math.sqrt(4)
-final[2*k-2][0]= final[1][0] = 0.0 
-final[2*k-1][0] = -final[2*k-1][0] 
-final[3][0] = 0.0
-final[4][0] =1.0
-
-final = final/np.linalg.norm(final) '''
+initial[0][0]=1.
+initial[1][0]= 2.
+initial/=np.linalg.norm(initial)
 
 #final = np.array([[ 0.015625 +0.00000000e+00j], [ 0.000000 +0.00000000e+00j], [ 0.031250 +3.82702125e-18j], [-0.015625 +1.91351062e-18j], [-0.015625 +0.00000000e+00j], [ 0.000000 -3.82702125e-18j], [ 0.000000 +0.00000000e+00j], [-0.015625 +5.74053187e-18j]])
 #final = np.array([[ 0.00035438+0.00000000e+00j], [ 0.        +0.00000000e+00j], [ 0.00141753+1.73597209e-19j], [-0.00035438+4.33993023e-20j], [ 0.        +2.60395814e-19j], [-0.00070876-8.67986045e-20j], [ 0.        -1.73597209e-19j], [ 0.00070876-8.67986045e-20j], [-0.00035438+8.67986045e-20j], [-0.00070876+8.67986045e-20j], [ 0.        +0.00000000e+00j], [-0.00035438+2.16996511e-19j],[ 0.000+0.0000j],[ 0.000+0.0000j],[ 0.000+0.0000j],[ 0.000+0.0000j]])
 
 #example of final state with 4 sites - n=3
-final = np.array([[ 0.0625+0.00000000e+00j], [ 0.    +0.00000000e+00j], [ 0.125 +1.53080850e-17j], [-0.0625+7.65404249e-18j], [-0.0625+6.35179545e-34j], [ 0.    -1.53080850e-17j], [ 0.    +0.00000000e+00j], [-0.0625+2.29621275e-17j], [ 0.    +0.00000000e+00j], [ 0.    +0.00000000e+00j]])
-
-#example of final state with 4 sites - n=3
 final = np.array([[ 0.0625+0.00000000e+00j], [ 0.    +0.00000000e+00j], [ 0.1875+2.29621275e-17j], [-0.0625+7.65404249e-18j], [-0.0625+1.53080850e-17j], [-0.0625-1.53080850e-17j], [ 0.0625-7.65404249e-18j], [ 0.0625+7.65404249e-18j], [ 0.    +0.00000000e+00j], [ 0.0625-3.06161700e-17j]])
 
+'''
+#state with entanglement between the sites i=2,3,4,5 total number of sites = 6
 final=np.array([[0.37685191],
        [0.        ],
        [0.41220111],
@@ -55,6 +34,7 @@ final=np.array([[0.37685191],
        [0.2779961 ],
        [0.        ],
        [0.494295  ]])
+'''
 
 Final = final
 print ("Final")
@@ -79,22 +59,29 @@ listinvc = []
 
 listSt.append (Final)
 
+#j number of step qoing backwards
 for j in range (n,1,-1) : 
     print (j)
     #definition of C
     v1=np.array([[final[0][0]],[final[3][0]]])
-    v2=np.array([[final[2*j-2][0]],[final[2*j+1][0]]])    
+    v2=np.array([[final[2*j-2][0]],[final[2*j+1][0]]])  
+    
+    
     print ("final",final)
     print ("v1",v1)
     print ("v2",v2)
+    
     matrixC = np.zeros((2*k,2*k),dtype=complex)
  
-    
+    #arbitrary constant
     a=cmath.pi
+    
+    #c calculated for backward quantum walk
     c = np.array([[v1[0][0],cmath.exp(a*1j)*v2[0][0].conjugate()],[v1[1][0],cmath.exp(a*1j)*v2[1][0].conjugate()]])
+    print ("c",c)
+    #c calculated for forward quantum walk
     #c = np.array([[v1[0][0],-cmath.exp(-a*1j)*v1[1][0].conjugate()],[v1[1][0],cmath.exp(a*1j)*v1[0][0].conjugate()]])
-    '''if (j==2) :
-        print (c/np.linalg.norm(c))'''
+
     c/=np.linalg.norm(c)
     listc.append(c)
     invc = np.linalg.inv(c)
@@ -112,18 +99,10 @@ for j in range (n,1,-1) :
     
     
     m1 = np.dot(invS,final)
-    #♦print (m1)
     m2 = np.dot(matrixC,m1) 
     m2 /= np.linalg.norm(m2)
-    #print ("2",  prevstate )
-    #print ("after step j=",j," ",prevstate)
-    listSt.append (m2)
     final = m2
-    
-    '''
-    x1 = np.array([[final[0][0]],[final[3][0]]])
-    x2 = np.array([[final[2][0]],[final[5][0]]])
-    print (np.dot(x1.transpose(),x2)) '''
+    listSt.append (final)
 
     
 C1 = np.dot(final,initial.transpose())
@@ -132,10 +111,18 @@ listC.append (C1)
 
 #calculate c1
 initial=np.array([[initial[0][0],initial[1][0]]])
-final=np.array([[final[0][0]],[final[k-1][0]]])
+final=np.array([[final[0][0]],[final[3][0]]])
 c1 = np.dot(final,initial)
 listc.append (c1)
+
+invc1 = np.linalg.inv(c1) #not needed
+#listinvc.append(invc1)
+
 listSt.append(initial)
+
+print ("List of States",listSt)
+print ("List of inverse matrices Cn",listinvc)
+
 
 
 
