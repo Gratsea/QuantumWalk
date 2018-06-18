@@ -120,13 +120,5 @@ invc1 = np.linalg.inv(c1) #not needed
 
 listSt.append(initial)
 
-print ("List of States",listSt)
-print ("List of inverse matrices Cn",listinvc)
-
-
-
-
-#demonastration
-
-
-
+print ("List of States","\n",listSt)
+print ("List of matrices Cn","\n",listc)
