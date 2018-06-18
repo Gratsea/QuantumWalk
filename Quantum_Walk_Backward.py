@@ -5,7 +5,7 @@ import numpy as np
 import cmath
 
 #define final state
-n=4 #number of steps
+n=5 #number of steps
 k=n+1 #number of sites
 
 
@@ -34,7 +34,7 @@ final[4][0] =1.0
 
 final = final/np.linalg.norm(final) '''
 
-final = np.array([[ 0.015625 +0.00000000e+00j], [ 0.000000 +0.00000000e+00j], [ 0.031250 +3.82702125e-18j], [-0.015625 +1.91351062e-18j], [-0.015625 +0.00000000e+00j], [ 0.000000 -3.82702125e-18j], [ 0.000000 +0.00000000e+00j], [-0.015625 +5.74053187e-18j]])
+#final = np.array([[ 0.015625 +0.00000000e+00j], [ 0.000000 +0.00000000e+00j], [ 0.031250 +3.82702125e-18j], [-0.015625 +1.91351062e-18j], [-0.015625 +0.00000000e+00j], [ 0.000000 -3.82702125e-18j], [ 0.000000 +0.00000000e+00j], [-0.015625 +5.74053187e-18j]])
 #final = np.array([[ 0.00035438+0.00000000e+00j], [ 0.        +0.00000000e+00j], [ 0.00141753+1.73597209e-19j], [-0.00035438+4.33993023e-20j], [ 0.        +2.60395814e-19j], [-0.00070876-8.67986045e-20j], [ 0.        -1.73597209e-19j], [ 0.00070876-8.67986045e-20j], [-0.00035438+8.67986045e-20j], [-0.00070876+8.67986045e-20j], [ 0.        +0.00000000e+00j], [-0.00035438+2.16996511e-19j],[ 0.000+0.0000j],[ 0.000+0.0000j],[ 0.000+0.0000j],[ 0.000+0.0000j]])
 
 #example of final state with 4 sites - n=3
@@ -42,6 +42,19 @@ final = np.array([[ 0.0625+0.00000000e+00j], [ 0.    +0.00000000e+00j], [ 0.125 
 
 #example of final state with 4 sites - n=3
 final = np.array([[ 0.0625+0.00000000e+00j], [ 0.    +0.00000000e+00j], [ 0.1875+2.29621275e-17j], [-0.0625+7.65404249e-18j], [-0.0625+1.53080850e-17j], [-0.0625-1.53080850e-17j], [ 0.0625-7.65404249e-18j], [ 0.0625+7.65404249e-18j], [ 0.    +0.00000000e+00j], [ 0.0625-3.06161700e-17j]])
+
+final=np.array([[0.37685191],
+       [0.        ],
+       [0.41220111],
+       [0.17939799],
+       [0.21614885],
+       [0.37908099],
+       [0.20440396],
+       [0.2517845 ],
+       [0.19667416],
+       [0.2779961 ],
+       [0.        ],
+       [0.494295  ]])
 
 Final = final
 print ("Final")
@@ -66,13 +79,14 @@ listinvc = []
 
 listSt.append (Final)
 
-for j in range (n,2,-1) : 
+for j in range (n,1,-1) : 
     print (j)
     #definition of C
     v1=np.array([[final[0][0]],[final[3][0]]])
-    v2=np.array([[final[2*k-4][0]],[final[2*k-1][0]]])    
-    print (v1)
-    print (v2)
+    v2=np.array([[final[2*j-2][0]],[final[2*j+1][0]]])    
+    print ("final",final)
+    print ("v1",v1)
+    print ("v2",v2)
     matrixC = np.zeros((2*k,2*k),dtype=complex)
  
     
@@ -100,7 +114,6 @@ for j in range (n,2,-1) :
     m1 = np.dot(invS,final)
     #♦print (m1)
     m2 = np.dot(matrixC,m1) 
-    print (m2)
     m2 /= np.linalg.norm(m2)
     #print ("2",  prevstate )
     #print ("after step j=",j," ",prevstate)
@@ -115,7 +128,15 @@ for j in range (n,2,-1) :
     
 C1 = np.dot(final,initial.transpose())
 listC.append (C1)
+
+
+#calculate c1
+initial=np.array([[initial[0][0],initial[1][0]]])
+final=np.array([[final[0][0]],[final[k-1][0]]])
+c1 = np.dot(final,initial)
+listc.append (c1)
 listSt.append(initial)
+
 
 
 #demonastration
